@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -83,7 +83,7 @@ namespace PokecordCatcherBot.Services
             await msg.Channel.SendMessageAsync("Whitelisting of pokemon has been toggled to " + State.WhitelistPokemon);
         }
 
-        [Command(nameof(ToggleSpam), "Toggle pokemon whitelisting.")]
+        [Command(nameof(ToggleSpam), "Toggle spamming.")]
         public async Task ToggleSpam(SocketMessage msg, string[] args)
         {
             State.SpammerEnabled = !State.SpammerEnabled;
@@ -94,14 +94,34 @@ namespace PokecordCatcherBot.Services
         [Command(nameof(Echo), "Has the bot say something.")]
         public async Task Echo(SocketMessage msg, string[] args) => 
             await msg.Channel.SendMessageAsync(String.Join(' ', args));
+			
+        [Command(nameof(Say), "Has the bot say something.")]
+        public async Task Say(SocketMessage msg, string[] args) => 
+            await msg.Channel.SendMessageAsync(String.Join(' ', args));
 
         [Command(nameof(Display), "Displays all pokemon of a certain name.")]
         public async Task Display(SocketMessage msg, string[] args) => 
             await msg.Channel.SendMessageAsync($"{Configuration.PokecordPrefix}pokemon --name {String.Join(' ', args)}");
 
+        [Command(nameof(AddId), "Adds a list of specified IDs")]
+        public async Task AddId(SocketMessage msg, string[] args) => 
+            await msg.Channel.SendMessageAsync($"{Configuration.PokecordPrefix}p add {String.Join(' ', args)}");
+			
         [Command(nameof(DisplayAll), "Displays all pokemon.")]
         public async Task DisplayAll(SocketMessage msg, string[] args) => 
             await msg.Channel.SendMessageAsync($"{Configuration.PokecordPrefix}pokemon");
+			
+        [Command(nameof(Accept), "Runs accept command in pokecord")]
+        public async Task Accept(SocketMessage msg, string[] args) => 
+            await msg.Channel.SendMessageAsync($"{Configuration.PokecordPrefix}accept");
+			
+        [Command(nameof(Confirm), "Confirms the current trade.")]
+        public async Task Confirm(SocketMessage msg, string[] args) => 
+            await msg.Channel.SendMessageAsync($"{Configuration.PokecordPrefix}confirm");
+			
+        [Command(nameof(StartTrade), "Starts a trade with the bot owner.")]
+        public async Task StartTrade(SocketMessage msg, string[] args) => 
+            await msg.Channel.SendMessageAsync($"{Configuration.PokecordPrefix}trade <@{Configuration.OwnerID}>");
 
         [Command(nameof(Details), "Toggles showing of detailed pokemon stats.")]
         public async Task Details(SocketMessage msg, string[] args) => 
@@ -123,7 +143,9 @@ namespace PokecordCatcherBot.Services
                 x => MessagePredicates.PokemonListingMessage(x, msg),
                 5
             );
-
+			
+			await Task.Delay(3000);
+			
             if (list == null)
             {
                 await msg.Channel.SendMessageAsync("Pokecord didn't display pokemon, aborting.");
@@ -132,7 +154,7 @@ namespace PokecordCatcherBot.Services
 
             var pokemans = Util.ParsePokemonListing(list.Embeds.First().Description);
 
-            await Task.Delay(1500);
+            await Task.Delay(3000);
 
             var trade = await ResponseGrabber.SendMessageAndGrabResponse(
                 (ITextChannel)msg.Channel,
@@ -141,7 +163,7 @@ namespace PokecordCatcherBot.Services
                 5
             );
 
-            await Task.Delay(1500);
+            await Task.Delay(3000);
 
             if (trade == null)
             {
@@ -171,7 +193,7 @@ namespace PokecordCatcherBot.Services
                 5
             );
 
-            await Task.Delay(1500);
+            await Task.Delay(3000);
 
             if (trade == null)
             {
@@ -180,9 +202,9 @@ namespace PokecordCatcherBot.Services
             }
 
             await msg.Channel.SendMessageAsync($"{Configuration.PokecordPrefix}p add {args[0]}");
-            await Task.Delay(1500);
+            await Task.Delay(3000);
             await msg.Channel.SendMessageAsync($"{Configuration.PokecordPrefix}confirm");
-            await Task.Delay(1500);
+            await Task.Delay(3000);
         }
     }
 }
